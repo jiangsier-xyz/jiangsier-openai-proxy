@@ -1,0 +1,45 @@
+autoscaling:
+  enabled: false
+cert:
+  manager:
+    namespace: cert-manager
+    version: v1.16.1
+deployment:
+  enabled: true
+image:
+  pullPolicy: IfNotPresent
+  repository: nginx:alpine
+ingress:
+  annotations:
+    cert-manager.io/cluster-issuer: jiangsier-openai-proxy-letsencrypt-http01
+  className: nginx
+  enabled: false
+  hosts:
+    - host: ''
+      paths:
+        - path: /
+          pathType: Prefix
+  tls:
+    enabled: false
+pdb:
+  create: true
+  minAvailable: ''
+  maxUnavailable: ''
+replicaCount: 1
+resources:
+  limits: {}
+  requests: {}
+service:
+  port: 80
+  type: ClusterIP
+serviceAccount:
+  create: true
+  automount: false
+livenessProbe:
+  tcpSocket:
+    port: 80
+readinessProbe:
+  tcpSocket:
+    port: 80
+
+

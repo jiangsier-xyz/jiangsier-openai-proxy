@@ -1,0 +1,22 @@
+{{- if .Values.deployment.enabled -}}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "helpers.fullname" . }}-conf
+  labels:
+    {{- include "helpers.labels" . | nindent 4 }}
+data:
+  {{ include "helpers.fullname" . }}.conf: |
+    server {
+        listen 80;
+        listen  [::]:80;
+        server_name  {{ (index .Values.ingress.hosts 0).host }};
+        location / {
+            proxy_pass https://api.openai.com/;
+            proxy_ssl_server_name on;
+            proxy_set_header Host api.openai.com;
+            proxy_buffering off;
+            proxy_send_timeout 600s;
+        }
+    }
+{{- end }}
